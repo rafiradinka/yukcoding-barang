@@ -34,7 +34,9 @@ $brg = new Barang($connection);
             <td><?php echo $data->nama_brg; ?></td>
             <td><?php echo $data->harga_brg; ?></td>
             <td><?php echo $data->stok_brg; ?></td>
-            <td><?php echo $data->gbr_brg; ?></td>
+            <td align="center">
+              <img src="assets/img/barang/<?php echo $data->gbr_brg; ?>" alt="" width="70px">
+            </td>
             <td align="center">
               <button class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Edit</button>
               <button class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i>Hapus</button>
@@ -45,8 +47,9 @@ $brg = new Barang($connection);
           ?>                
         </table>
       </div>
-      <button type="button" class="btn btn-success" data-toggle="modal" data-target="#tambah">Tambah Data</button>
 
+      <!-- Tambah Data HTML -->
+      <button type="button" class="btn btn-success" data-toggle="modal" data-target="#tambah">Tambah Data</button>
       <div id="tambah" class="modal fade" role="dialog">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -78,6 +81,26 @@ $brg = new Barang($connection);
                 <input type="submit" class="btn btn-success" name="tambah" value="Simpan">
               </div>
             </form>
+
+            <!-- tambah data ke database -->
+            <?php 
+            if(isset($_POST['tambah'])){
+              $nm_brg = $connection->conn->real_escape_string($_POST['nm_brg']);
+              $hrg_brg = $connection->conn->real_escape_string($_POST['hrg_brg']);
+              $stok_brg = $connection->conn->real_escape_string($_POST['stok_brg']);
+
+              $extensi = explode(".", $_FILES['gbr_brg']['name']);
+              $gbr_brg = "brg-" . round(microtime(true)) . "." . end($extensi);
+              $sumber = $_FILES['gbr_brg']['tmp_name'];
+              $upload = move_uploaded_file($sumber, "assets/img/barang/".$gbr_brg);
+              if($upload){
+                $brg->tambah($nm_brg, $hrg_brg, $stok_brg, $gbr_brg);
+                header("location: ?page=barang");
+              } else{
+                echo"<script>alert('upload gambar gagal!')</script>"; 
+              }
+            }
+            ?>
           </div>
         </div>
       </div>
