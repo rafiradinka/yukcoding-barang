@@ -1,4 +1,5 @@
 <?php 
+ob_start();
 include("config/koneksi.php");
 include("models/database.php");
 
