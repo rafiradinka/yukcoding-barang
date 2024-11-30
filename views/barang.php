@@ -38,7 +38,8 @@ $brg = new Barang($connection);
               <img src="assets/img/barang/<?php echo $data->gbr_brg; ?>" alt="" width="70px">
             </td>
             <td align="center">
-              <button class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Edit</button>
+              <a href="" id="edit_brg" data-toggle="modal" data-target="#edit" data-id="<?php echo $data->id_brg; ?>" data-nama="<?php echo $data->nama_brg; ?>" data-harga="<?php echo $data->harga_brg; ?>" data-stok="<?php echo $data->stok_brg; ?>" data-gbr="<?php echo $data->gbr_brg; ?>">
+                <button class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Edit</button></a>
               <button class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i>Hapus</button>
             </td>
           </tr>
@@ -60,19 +61,19 @@ $brg = new Barang($connection);
             <form action="" method="post" enctype="multipart/form-data">
               <div class="modal-body">
                 <div class="form-group">
-                  <div class="control-label" for="nm_brg">Nama Barang</div>
+                  <label class="control-label" for="nm_brg">Nama Barang</label>
                   <input type="text" name="nm_brg" class="form-control" id="nm_brg" required>
                 </div>
                 <div class="form-group">
-                  <div class="control-label" for="hrg_brg">Harga Barang</div>
+                  <label class="control-label" for="hrg_brg">Harga Barang</label>
                   <input type="number" name="hrg_brg" class="form-control" id="hrg_brg" required>
                 </div>
                 <div class="form-group">
-                  <div class="control-label" for="stok_brg">Stok Barang</div>
+                  <label class="control-label" for="stok_brg">Stok Barang</label>
                   <input type="number" name="stok_brg" class="form-control" id="stok_brg" required>
                 </div>
                 <div class="form-group">
-                  <div class="control-label" for="gbr_brg">Gambar Barang</div>
+                  <label class="control-label" for="gbr_brg">Gambar Barang</label>
                   <input type="file" name="gbr_brg" class="form-control" id="gbr_brg" required>
                 </div>
               </div>
@@ -92,6 +93,7 @@ $brg = new Barang($connection);
               $extensi = explode(".", $_FILES['gbr_brg']['name']);
               $gbr_brg = "brg-" . round(microtime(true)) . "." . end($extensi);
               $sumber = $_FILES['gbr_brg']['tmp_name'];
+              
               $upload = move_uploaded_file($sumber, "assets/img/barang/".$gbr_brg);
               if($upload){
                 $brg->tambah($nm_brg, $hrg_brg, $stok_brg, $gbr_brg);
@@ -104,5 +106,81 @@ $brg = new Barang($connection);
           </div>
         </div>
       </div>
+
+      <!-- Edit data html -->
+      <div id="edit" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Edit Data Barang</h4>
+            </div>
+            <form id="form" enctype="multipart/form-data">
+              <div class="modal-body" id="modal-edit">
+                <div class="form-group">
+                  <label class="control-label" for="nm_brg">Nama Barang</label>
+                  <input type="hidden" name="id_brg" id="id_brg">
+                  <input type="text" name="nm_brg" class="form-control" id="nm_brg" required>
+                </div>
+                <div class="form-group">
+                  <label class="control-label" for="hrg_brg">Harga Barang</label>
+                  <input type="number" name="hrg_brg" class="form-control" id="hrg_brg" required>
+                </div>
+                <div class="form-group">
+                  <label class="control-label" for="stok_brg">Stok Barang</label>
+                  <input type="number" name="stok_brg" class="form-control" id="stok_brg" required>
+                </div>
+                <div class="form-group">
+                  <label class="control-label" for="gbr_brg">Gambar Barang</label>
+                    <div style="padding-bottom: 5px;">
+                      <img src="" width="80px" id="pict">
+                    </div>
+                  <input type="file" name="gbr_brg" class="form-control" id="gbr_brg">
+                </div>
+              </div>
+              <div class="modal-footer"> 
+                <input type="submit" class="btn btn-success" name="edit" value="Simpan">
+              </div>
+          </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- menghubungkan dengan jquery -->
+      <script src="assets/js/jquery-1.10.2.js" ></script>
+      <script type="text/javascript">
+        // mengambil data dari line 41
+        $(document).on("click", "#edit_brg", function(){
+        var idbrg = $(this).data('id');
+        var nmbrg = $(this).data('nama');
+        var hrgbrg = $(this).data('harga');
+        var stokbrg = $(this).data('stok');
+        var gbrbrg = $(this).data('gbr');
+        $("#modal-edit #id_brg").val(idbrg);
+        $("#modal-edit #nm_brg").val(nmbrg);
+        $("#modal-edit #hrg_brg").val(hrgbrg);
+        $("#modal-edit #stok_brg").val(stokbrg);
+        $("#modal-edit #pict").attr("src", "assets/img/barang/"+gbrbrg);
+      }) 
+
+      $(document).ready(function(e){
+          $("#form").on("submit", (function(e){
+                e.preventDefault();
+                $.ajax({
+                  url : 'models/proses_edit_barang.php',
+                  type : 'POST',
+                  data : new FormData(this),
+                  contentType : false,
+                  cache : false,
+                  processData : false,
+                  success : function(msg){
+                    $('.table').html(msg);
+                  }
+                })
+          }))
+
+      })
+      </script>
+      
   </div>
 </div>
