@@ -9,7 +9,9 @@ if(isset($_GET['act']) == ''){
     <div class="col-lg-12">
       <h1>Barang <small>Data Barang</small></h1>
         <ol class="breadcrumb">
-            <li><a href="index.html"><i class="icon-dashboard"></i> Barang</a></li>
+            <li><a href=""><i class="fa fa-dashboard"></i></a></li>
+            <li><a href="">Barang</a></li>
+            <li class="active">Data Barang</li>
         </ol>
     </div>
   </div><!-- /.row -->
