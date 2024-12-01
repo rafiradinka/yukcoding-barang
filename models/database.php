@@ -12,10 +12,8 @@ class Database {
         $this->pass = $pass;
         $this->db = $db;
 
-        // Membuat koneksi
         $this->conn = new mysqli($this->host, $this->user, $this->pass, $this->db);
 
-        // Memeriksa koneksi
         if ($this->conn->connect_error) {
             die("Koneksi gagal: " . $this->conn->connect_error);
         }
